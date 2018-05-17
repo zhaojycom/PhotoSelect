@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">SelectLibrary</string>
+    <string name="selectPhoto">选择照片</string>
+
+    <dimen name="titleBarH">50dp</dimen>
+    <dimen name="titleSize">18dp</dimen>
+    <dimen name="titleMlr">16dp</dimen>
+
 </resources>

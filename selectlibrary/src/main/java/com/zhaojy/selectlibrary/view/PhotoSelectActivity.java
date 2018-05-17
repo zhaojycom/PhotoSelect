@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.Window;
 
 import com.zhaojy.selectlibrary.R;
 import com.zhaojy.selectlibrary.data.GetPhotoPath;
 import com.zhaojy.selectlibrary.util.PathUtil;
 import com.zhaojy.selectlibrary.util.PermissionUtils;
+import com.zhaojy.selectlibrary.util.StatusBarUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -22,9 +24,16 @@ import java.util.Map;
  * @data:On 2018/5/17.
  */
 
-public class PhotoSelectActivity extends AppCompatActivity {
+public class PhotoSelectActivity extends AppCompatActivity implements View.OnClickListener {
     private final static String TAG = PhotoSelectActivity.class.getSimpleName();
     private final int PERMISSION_REQUEST_CODE = 10000;
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.back) {
+            this.finish();
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -53,6 +62,8 @@ public class PhotoSelectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        //设置状态栏透明
+        StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.theme));
         setContentView(R.layout.photo_select_layout);
 
         applyPermission();
@@ -94,4 +105,5 @@ public class PhotoSelectActivity extends AppCompatActivity {
             getPhotoPath();
         }
     }
+
 }

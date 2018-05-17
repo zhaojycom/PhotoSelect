@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <!--标题栏-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/titleBarH"
+        android:background="@drawable/titlebar_shpae"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!--返回图标-->
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="@dimen/titleMlr"
+            android:onClick="onClick"
+            android:src="@mipmap/back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/selectPhoto"
+            android:textColor="@color/black"
+            android:textSize="@dimen/titleSize" />
+
+    </LinearLayout>
+
+    <!--底部目录选择栏-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/titleBarH"
+        android:layout_alignParentBottom="true"
+        android:background="#aaeeeeee"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/titleMlr"
+            android:layout_marginRight="@dimen/titleMlr"
+            android:text="所有照片"
+            android:textColor="@color/black"
+            android:textSize="@dimen/titleSize" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/list" />
+
+    </LinearLayout>
+
+</RelativeLayout>

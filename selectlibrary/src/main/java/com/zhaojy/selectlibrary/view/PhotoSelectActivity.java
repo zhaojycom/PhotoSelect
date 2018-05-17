@@ -9,8 +9,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
+import android.widget.GridView;
 
 import com.zhaojy.selectlibrary.R;
+import com.zhaojy.selectlibrary.adapter.PhotoAdapter;
 import com.zhaojy.selectlibrary.data.GetPhotoPath;
 import com.zhaojy.selectlibrary.util.PathUtil;
 import com.zhaojy.selectlibrary.util.PermissionUtils;
@@ -27,6 +29,8 @@ import java.util.Map;
 public class PhotoSelectActivity extends AppCompatActivity implements View.OnClickListener {
     private final static String TAG = PhotoSelectActivity.class.getSimpleName();
     private final int PERMISSION_REQUEST_CODE = 10000;
+
+    private GridView photoGridView;
 
     @Override
     public void onClick(View view) {
@@ -62,17 +66,30 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        //设置状态栏透明
-        StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.theme));
         setContentView(R.layout.photo_select_layout);
 
+        init();
+    }
+
+    private void init() {
+        //设置状态栏透明
+        StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.theme));
+        findViewById();
+        //申请权限
         applyPermission();
+    }
+
+    private void findViewById() {
+        photoGridView = findViewById(R.id.photoGridView);
     }
 
     private void getPhotoPath() {
         List<String> path = GetPhotoPath.queryGallery(this);
         Map<String, List<String>> map = PathUtil.getPathSort(path);
 
+        PhotoAdapter pictureAdapter = new PhotoAdapter(this, path);
+        photoGridView.setAdapter(pictureAdapter);
+        
     }
 
     /**

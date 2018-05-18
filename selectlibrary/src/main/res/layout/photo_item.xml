@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="120dp">
+    android:layout_height="120dp"
+    android:background="#ccc">
 
     <ImageView
         android:id="@+id/photo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#898989" />
+        android:layout_height="120dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/placeholder" />
 
     <LinearLayout
         android:layout_width="@dimen/selectRingHw"
@@ -20,5 +22,14 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/footerBar"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+    </LinearLayout>
 
 </RelativeLayout>

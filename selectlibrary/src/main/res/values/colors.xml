@@ -7,7 +7,7 @@
     <color name="bg">#f4f4f4</color>
     <color name="transparent">@android:color/transparent</color>
     <color name="titleBg">#ffffff</color>
-    <color name="photoCover">#aa444444</color>
+    <color name="photoCover">#aa222222</color>
     <color name="photoSelectedRing">#08979a</color>
     <color name="photoItemBg">#ccc</color>
 

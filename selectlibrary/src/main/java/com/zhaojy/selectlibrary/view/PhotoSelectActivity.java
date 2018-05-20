@@ -2,8 +2,10 @@ package com.zhaojy.selectlibrary.view;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,9 +23,11 @@ import com.zhaojy.selectlibrary.data.GetPhotoPath;
 import com.zhaojy.selectlibrary.util.PathUtil;
 import com.zhaojy.selectlibrary.util.PermissionUtils;
 import com.zhaojy.selectlibrary.util.PhotoSortPopUtil;
+import com.zhaojy.selectlibrary.util.PhotoUtils;
 import com.zhaojy.selectlibrary.util.ScreenUtils;
 import com.zhaojy.selectlibrary.util.StatusBarUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -178,11 +182,18 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     private void setPhotoAdapter() {
         adapterPathList = new ArrayList<>();
         adapterPathList.addAll(pathList);
-        photoAdapter = new PhotoAdapter(this, adapterPathList, MAX_SELECTED
-                , new PhotoAdapter.ISelected() {
+        photoAdapter = new PhotoAdapter(this, adapterPathList, MAX_SELECTED);
+        photoAdapter.setSelected(new PhotoAdapter.ISelected() {
             @Override
             public void selected(int selectedSum) {
                 selected.setText("完成(" + selectedSum + "/" + MAX_SELECTED + ")");
+            }
+        });
+        //单选监听接口
+        photoAdapter.setSingleSelected(new PhotoAdapter.ISingleSelected() {
+            @Override
+            public void selected() {
+                singleResult();
             }
         });
         photoGridView.setAdapter(photoAdapter);
@@ -253,6 +264,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         selected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //将获取到的图片地址集合发给请求方
                 List<String> path = photoAdapter.getSelectedList();
                 builder.getSelectedPhotoPath().selectedResult(path);
             }
@@ -263,7 +275,36 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
      * 初始化选中情况
      */
     private void initSelected() {
+        if (!builder.getMultiple()) {
+            //如果不是多选隐藏
+            selected.setVisibility(View.GONE);
+        }
         selected.setText("完成(0/" + MAX_SELECTED + ")");
+    }
+
+
+    /**
+     * 单选结果处理
+     */
+    private void singleResult() {
+        //将获取到的图片地址集合发给请求方
+        List<String> path = photoAdapter.getSelectedList();
+
+        if (builder.getCropable()) {
+            //如果可裁剪
+            Uri uri = PhotoUtils.getUri(PhotoSelectActivity.this, path.get(0));
+            File fileCropUri = new File(Environment
+                    .getExternalStorageDirectory().getPath() + "/crop_photo.jpg");
+            Uri cropImageUri = Uri.fromFile(fileCropUri);
+            PhotoUtils.cropImageUri(PhotoSelectActivity.this, uri, cropImageUri,
+                    builder.getCropWidth(), builder.getCropHeight()
+                    , builder.getCropWidth(), builder.getCropHeight()
+                    , PhotoUtils.CODE_CROP_REQUEST);
+
+        } else {
+            builder.getSelectedPhotoPath().selectedResult(path);
+        }
+
     }
 
     /**

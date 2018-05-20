@@ -24,6 +24,7 @@
 
     <!--选中圆环-->
     <LinearLayout
+        android:id="@+id/selectedRing"
         android:layout_width="@dimen/selectRingHw"
         android:layout_height="@dimen/selectRingHw"
         android:layout_alignParentRight="true"

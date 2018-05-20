@@ -55,15 +55,27 @@ public class PhotoAdapter extends BaseAdapter {
     private ISelected selected;
 
     /**
+     * 单选回执接口
+     */
+    public ISingleSelected singleSelected;
+
+    /**
      * 照片选择器构建对象
      */
     private PhotoSelectBuilder builder = PhotoSelectBuilder.getInstance();
 
-    public PhotoAdapter(Context context, List<String> pathList, int maxSelected, ISelected selected) {
+    public void setSelected(ISelected selected) {
+        this.selected = selected;
+    }
+
+    public void setSingleSelected(ISingleSelected singleSelected) {
+        this.singleSelected = singleSelected;
+    }
+
+    public PhotoAdapter(Context context, List<String> pathList, int maxSelected) {
         this.context = context;
         this.pathList = pathList;
         this.maxSelected = maxSelected;
-        this.selected = selected;
 
         selectedList = new ArrayList<>();
         initMap();
@@ -108,6 +120,75 @@ public class PhotoAdapter extends BaseAdapter {
                 .placeholder(R.mipmap.placeholder)
                 .into(imageViewReference.get());
 
+        //设置多选和单选
+        if (builder.getMultiple()) {
+            multiple(viewHolder, position);
+        } else {
+            single(viewHolder, position);
+        }
+
+        return convertView;
+    }
+
+    class ViewHolder {
+        ImageView photo;
+        LinearLayout selected;
+        LinearLayout cover;
+        LinearLayout selectedRing;
+
+        public ViewHolder(View view) {
+            // 初始化组件
+            photo = view.findViewById(R.id.photo);
+            cover = view.findViewById(R.id.cover);
+            selected = view.findViewById(R.id.selected);
+            selectedRing = view.findViewById(R.id.selectedRing);
+
+            //初始化设置
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) photo.getLayoutParams();
+            lp.height = builder.getPhotoItemHw();
+            photo.setLayoutParams(lp);
+
+            RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) cover.getLayoutParams();
+            lp2.height = builder.getPhotoItemHw();
+            cover.setLayoutParams(lp2);
+        }
+    }
+
+    /**
+     * 设置为选中状态
+     */
+    private void setSelected(ViewHolder holder) {
+        holder.cover.setVisibility(View.VISIBLE);
+        holder.selected.setVisibility(View.VISIBLE);
+    }
+
+    public interface ISelected {
+        void selected(int selectedSum);
+    }
+
+    /**
+     * 单选回执接口
+     */
+    public interface ISingleSelected {
+        void selected();
+    }
+
+    /**
+     * 获取选中的图片路径集合
+     *
+     * @return
+     */
+    public List<String> getSelectedList() {
+        return selectedList;
+    }
+
+    /**
+     * 多选设置
+     *
+     * @param viewHolder ViewHolder对象
+     * @param position   位置索引
+     */
+    private void multiple(ViewHolder viewHolder, final int position) {
         //如果之前该位置已经选中，进行选中状态设置
         if (map.get(pathList.get(position))) {
             setSelected(viewHolder);
@@ -145,52 +226,26 @@ public class PhotoAdapter extends BaseAdapter {
                 selected.selected(selectedSum);
             }
         });
-
-        return convertView;
-    }
-
-    class ViewHolder {
-        ImageView photo;
-        LinearLayout selected;
-        LinearLayout cover;
-
-        public ViewHolder(View view) {
-            // 初始化组件
-            photo = view.findViewById(R.id.photo);
-            cover = view.findViewById(R.id.cover);
-            selected = view.findViewById(R.id.selected);
-
-            //初始化设置
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) photo.getLayoutParams();
-            lp.height = builder.getPhotoItemHw();
-            photo.setLayoutParams(lp);
-
-            RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) cover.getLayoutParams();
-            lp2.height = builder.getPhotoItemHw();
-            cover.setLayoutParams(lp2);
-        }
     }
 
     /**
-     * 设置为选中状态
-     */
-    private void setSelected(ViewHolder holder) {
-        holder.cover.setVisibility(View.VISIBLE);
-        holder.selected.setVisibility(View.VISIBLE);
-    }
-
-    public interface ISelected {
-        void selected(int selectedSum);
-    }
-
-    /**
-     * 获取选中的图片路径集合
+     * 单选设置
      *
-     * @return
+     * @param viewHolder ViewHolder对象
+     * @param position   位置索引
      */
-    public List<String> getSelectedList() {
-        return selectedList;
-    }
+    private void single(ViewHolder viewHolder, final int position) {
+        viewHolder.selectedRing.setVisibility(View.GONE);
 
+        viewHolder.photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedList.clear();
+                selectedList.add(pathList.get(position));
+
+                singleSelected.selected();
+            }
+        });
+    }
 
 }

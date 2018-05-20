@@ -38,6 +38,26 @@ public class PhotoSelectBuilder implements Builder {
      */
     private ISelectedPhotoPath selectedPhotoPath;
 
+    /**
+     * 是否为多选
+     */
+    private boolean multiple;
+
+    /**
+     * 是否可裁剪
+     */
+    private boolean cropable;
+
+    /**
+     * 裁剪宽度
+     */
+    private int cropWidth;
+
+    /**
+     * 裁剪高度
+     */
+    private int cropHeight;
+
     private PhotoSelectBuilder() {
 
     }
@@ -70,6 +90,30 @@ public class PhotoSelectBuilder implements Builder {
     }
 
     @Override
+    public Builder setMultiple(boolean multiple) {
+        this.multiple = multiple;
+        return this;
+    }
+
+    @Override
+    public Builder setCropable(boolean cropable) {
+        this.cropable = cropable;
+        return this;
+    }
+
+    @Override
+    public Builder setCropWidth(int cropWidth) {
+        this.cropWidth = cropWidth;
+        return this;
+    }
+
+    @Override
+    public Builder setCropHeight(int cropHeight) {
+        this.cropHeight = cropHeight;
+        return this;
+    }
+
+    @Override
     public int getHorizontalSpacing() {
         return horizontalSpacing;
     }
@@ -84,6 +128,25 @@ public class PhotoSelectBuilder implements Builder {
         return photoItemHw;
     }
 
+    @Override
+    public boolean getMultiple() {
+        return multiple;
+    }
+
+    @Override
+    public boolean getCropable() {
+        return cropable;
+    }
+
+    @Override
+    public int getCropWidth() {
+        return cropWidth;
+    }
+
+    @Override
+    public int getCropHeight() {
+        return cropHeight;
+    }
 
     @Override
     public ISelectedPhotoPath getSelectedPhotoPath() {

@@ -3,4 +3,12 @@
     <color name="theme">#fff</color>
     <color name="white">#fff</color>
     <color name="black">#000</color>
+    <color name="footerBar">#aa222222</color>
+    <color name="bg">#f4f4f4</color>
+    <color name="transparent">@android:color/transparent</color>
+    <color name="titleBg">#ffffff</color>
+    <color name="photoCover">#aa444444</color>
+    <color name="photoSelectedRing">#08979a</color>
+    <color name="photoItemBg">#ccc</color>
+
 </resources>

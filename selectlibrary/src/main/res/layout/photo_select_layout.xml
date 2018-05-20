@@ -2,57 +2,104 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/titleBg">
 
     <!--标题栏-->
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/titleBarH"
         android:background="@drawable/titlebar_shpae"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="@dimen/titleMlr">
 
-        <!--返回图标-->
+        <!--返回-->
         <ImageView
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/titleMlr"
             android:onClick="onClick"
             android:src="@mipmap/back" />
 
+        <!--标题-->
         <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/back"
             android:text="@string/selectPhoto"
             android:textColor="@color/black"
             android:textSize="@dimen/titleSize" />
 
-    </LinearLayout>
+        <!--选中情况-->
+        <TextView
+            android:id="@+id/selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/selected_tv_shape"
+            android:paddingBottom="@dimen/selectedPtb"
+            android:paddingLeft="@dimen/selectedPlr"
+            android:paddingRight="@dimen/selectedPlr"
+            android:paddingTop="@dimen/selectedPtb"
+            android:textColor="@color/white"
+            android:textSize="@dimen/selectedTxtS" />
+
+    </RelativeLayout>
+
+    <!--照片展示-->
+    <GridView
+        android:id="@+id/photoGridView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/titleBar"
+        android:background="@color/bg"
+        android:gravity="center"
+        android:numColumns="3"
+        android:paddingBottom="@dimen/titleBarH"
+        android:stretchMode="columnWidth">
+
+    </GridView>
 
     <!--底部目录选择栏-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/titleBarH"
         android:layout_alignParentBottom="true"
-        android:background="#aaeeeeee"
-        android:gravity="center_vertical"
+        android:background="@color/titleBg"
         android:orientation="horizontal">
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/photoSort"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/titleMlr"
-            android:layout_marginRight="@dimen/titleMlr"
-            android:text="所有照片"
-            android:textColor="@color/black"
-            android:textSize="@dimen/titleSize" />
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:onClick="onClick"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/list" />
+            <TextView
+                android:id="@+id/sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/titleMlr"
+                android:layout_marginRight="@dimen/titleMlr"
+                android:text="所有照片"
+                android:textColor="@color/black"
+                android:textSize="@dimen/titleSize" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/list" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

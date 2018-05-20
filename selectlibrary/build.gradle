@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.zhaojycom'
+group = 'com.github.zhaojycom'
 
 android {
     compileSdkVersion 27
@@ -32,4 +32,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    /*glide*/
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    /*recyclerview*/
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
 }

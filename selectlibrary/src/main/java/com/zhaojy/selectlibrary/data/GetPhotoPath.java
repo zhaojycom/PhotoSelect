@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.database.Cursor;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +42,17 @@ public class GetPhotoPath {
             //获取图片的名称
             String name = cursor.getString(cursor.getColumnIndex(
                     MediaStore.Images.Media.DISPLAY_NAME));
-            //获取图片的生成日期
+            //获取图片的全称
             byte[] data = cursor.getBlob(cursor.getColumnIndex(
                     MediaStore.Images.Media.DATA));
             //获取图片的详细信息
             String desc = cursor.getString(cursor.getColumnIndex(
                     MediaStore.Images.Media.DESCRIPTION));
+
+            String file = new String(data, 0, data.length - 1);
             names.add(name);
             descs.add(desc);
-            fileNames.add(new String(data, 0, data.length - 1));
+            fileNames.add(file);
         }
 
         return fileNames;

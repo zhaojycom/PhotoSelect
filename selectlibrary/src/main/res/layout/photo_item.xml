@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
-    android:background="#ccc">
+    android:layout_height="wrap_content"
+    android:background="@color/photoItemBg">
 
     <ImageView
         android:id="@+id/photo"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@mipmap/placeholder" />
 
+    <!--遮盖层-->
+    <LinearLayout
+        android:id="@+id/cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/photoCover"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+    </LinearLayout>
+
+    <!--选中圆环-->
     <LinearLayout
         android:layout_width="@dimen/selectRingHw"
         android:layout_height="@dimen/selectRingHw"
@@ -20,15 +32,20 @@
         android:background="@drawable/photo_item_select_ring"
         android:gravity="center">
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/selected"
+            android:layout_width="@dimen/selectRingInnerRadius"
+            android:layout_height="@dimen/selectRingInnerRadius"
+            android:background="@drawable/photo_item_select_inner_ring"
+            android:gravity="center"
+            android:visibility="gone">
 
-    <LinearLayout
-        android:id="@+id/cover"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/footerBar"
-        android:orientation="horizontal"
-        android:visibility="gone">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/selected" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

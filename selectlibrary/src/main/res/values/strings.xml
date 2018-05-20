@@ -1,8 +1,19 @@
 <resources>
     <string name="selectPhoto">选择照片</string>
+    <string name="tip">已经达到最高选择数量</string>
 
     <dimen name="titleBarH">50dp</dimen>
     <dimen name="titleSize">18dp</dimen>
     <dimen name="titleMlr">16dp</dimen>
+    <dimen name="selectRingHw">20dp</dimen>
+    <dimen name="selectRingStoke">2dp</dimen>
+    <dimen name="selectRingMtr">4dp</dimen>
+    <dimen name="selectRingInnerRadius">18dp</dimen>
+    <dimen name="selectRingRadius">9dp</dimen>
+    <dimen name="photoSortIconHw">80dp</dimen>
+    <dimen name="selectedPlr">8dp</dimen>
+    <dimen name="selectedPtb">4dp</dimen>
+    <dimen name="selectedTxtS">16dp</dimen>
+    <dimen name="popwindowCorner">10dp</dimen>
 
 </resources>

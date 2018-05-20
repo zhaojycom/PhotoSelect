@@ -10,14 +10,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.zhaojy.selectlibrary.R;
 import com.zhaojy.selectlibrary.adapter.PhotoAdapter;
+import com.zhaojy.selectlibrary.bean.PhotoSortBean;
+import com.zhaojy.selectlibrary.control.PhotoSelectBuilder;
 import com.zhaojy.selectlibrary.data.GetPhotoPath;
 import com.zhaojy.selectlibrary.util.PathUtil;
 import com.zhaojy.selectlibrary.util.PermissionUtils;
+import com.zhaojy.selectlibrary.util.PhotoSortPopUtil;
+import com.zhaojy.selectlibrary.util.ScreenUtils;
 import com.zhaojy.selectlibrary.util.StatusBarUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,10 +38,45 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     private final int PERMISSION_REQUEST_CODE = 10000;
 
     private GridView photoGridView;
+    private PhotoAdapter photoAdapter;
+
+    /**
+     * 照片分类弹框工具
+     */
+    private PhotoSortPopUtil sortPopUtil;
+
+    /**
+     * 最大选中数量
+     */
+    private final static int MAX_SELECTED = 9;
+
+    /**
+     * 所有照片路径集合
+     */
+    private List<String> pathList;
+
+    /**
+     * 适配器照片路径集合
+     */
+    private List<String> adapterPathList;
+    /**
+     * 所有照片分类map集合
+     */
+    private Map<String, List<String>> sortMap;
+
+    private LinearLayout photoSort;
+    private TextView selected;
+    private TextView sort;
+
+    /**
+     * 照片选择器构建对象
+     */
+    private PhotoSelectBuilder builder = PhotoSelectBuilder.getInstance();
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.back) {
+        int id = view.getId();
+        if (id == R.id.back) {
             this.finish();
         }
     }
@@ -55,10 +97,17 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
 
             if (isAllGranted) {
                 //获得了所有的权限
-                getPhotoPath();
+                control();
             } else {
 
             }
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus) {
+
         }
     }
 
@@ -73,7 +122,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
 
     private void init() {
         //设置状态栏透明
-        StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.theme));
+        StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.titleBg));
         findViewById();
         //申请权限
         applyPermission();
@@ -81,15 +130,140 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
 
     private void findViewById() {
         photoGridView = findViewById(R.id.photoGridView);
+        photoSort = findViewById(R.id.photoSort);
+        selected = findViewById(R.id.selected);
+        sort = findViewById(R.id.sort);
     }
 
-    private void getPhotoPath() {
-        List<String> path = GetPhotoPath.queryGallery(this);
-        Map<String, List<String>> map = PathUtil.getPathSort(path);
+    /**
+     * 控制
+     */
+    private void control() {
+        //获取所有照片的路径
+        getPhotoPath();
+        //设置GridView
+        setPhotoGridView();
+        //设置GridView适配器
+        setPhotoAdapter();
+        //设置照片分类弹窗
+        setPopupWindow();
+        //设置监听器
+        setListener();
+        //初始化选中情况
+        initSelected();
+    }
 
-        PhotoAdapter pictureAdapter = new PhotoAdapter(this, path);
-        photoGridView.setAdapter(pictureAdapter);
-        
+    /**
+     * 获取所有照片的路径
+     */
+    private void getPhotoPath() {
+        pathList = GetPhotoPath.queryGallery(this);
+        //获取照片的分类信息
+        sortMap = PathUtil.getPathSort(pathList);
+    }
+
+    private void setPhotoGridView() {
+        photoGridView.setHorizontalSpacing(builder.getHorizontalSpacing());
+        photoGridView.setVerticalSpacing(builder.getVerticalSpacing());
+        //获取屏幕宽度
+        int screenWidth = ScreenUtils.getScreenWidth(this);
+        photoGridView.setColumnWidth(screenWidth / 3);
+        //设置照片宽高
+        builder.setPhotoItemHw((screenWidth - 2 * builder.getHorizontalSpacing()) / 3);
+    }
+
+    /**
+     * 设置GridView适配器
+     */
+    private void setPhotoAdapter() {
+        adapterPathList = new ArrayList<>();
+        adapterPathList.addAll(pathList);
+        photoAdapter = new PhotoAdapter(this, adapterPathList, MAX_SELECTED
+                , new PhotoAdapter.ISelected() {
+            @Override
+            public void selected(int selectedSum) {
+                selected.setText("完成(" + selectedSum + "/" + MAX_SELECTED + ")");
+            }
+        });
+        photoGridView.setAdapter(photoAdapter);
+    }
+
+    /**
+     * 设置PopupWindow
+     */
+    public void setPopupWindow() {
+        sortPopUtil = new PhotoSortPopUtil();
+        final List<PhotoSortBean> data = new ArrayList<>();
+        PhotoSortBean photoSortBean = new PhotoSortBean();
+        photoSortBean.setTitle("所有照片");
+        photoSortBean.setPath("/sdcard");
+        if (pathList.size() > 0) {
+            photoSortBean.setIconPath(pathList.get(0));
+        }
+        photoSortBean.setSum(pathList.size());
+        data.add(photoSortBean);
+
+        for (String key : sortMap.keySet()) {
+            PhotoSortBean psb = new PhotoSortBean();
+            psb.setTitle(key);
+            psb.setSum(sortMap.get(key).size());
+            psb.setIconPath(sortMap.get(key).get(0));
+            String[] temp = sortMap.get(key).get(0).split("/");
+            String str = "";
+            for (int i = 0; i < temp.length - 1; i++) {
+                if (i != 0) {
+                    str += "/";
+                }
+                str += temp[i];
+            }
+            psb.setPath(str);
+            data.add(psb);
+        }
+        sortPopUtil.setClickListener(new PhotoSortPopUtil.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                adapterPathList.clear();
+                if (position == 0) {
+                    adapterPathList.addAll(pathList);
+                } else {
+                    adapterPathList.addAll(sortMap.get(data.get(position).getTitle()));
+                }
+
+                photoAdapter.notifyDataSetChanged();
+
+                sortPopUtil.dismiss();
+
+                sort.setText(data.get(position).getTitle());
+            }
+        });
+        sortPopUtil.createSpinner(this, data);
+    }
+
+    /**
+     * 设置监听器
+     */
+    private void setListener() {
+        photoSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortPopUtil.showSpinner();
+            }
+        });
+
+        selected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<String> path = photoAdapter.getSelectedList();
+                builder.getSelectedPhotoPath().selectedResult(path);
+            }
+        });
+    }
+
+    /**
+     * 初始化选中情况
+     */
+    private void initSelected() {
+        selected.setText("完成(0/" + MAX_SELECTED + ")");
     }
 
     /**
@@ -119,7 +293,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
             }
         } else {
             //获得全部权限
-            getPhotoPath();
+            control();
         }
     }
 

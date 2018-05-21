@@ -1,6 +1,7 @@
 <resources>
     <string name="selectPhoto">选择照片</string>
     <string name="tip">已经达到最高选择数量</string>
+    <string name="takePhoto">拍摄照片</string>
 
     <dimen name="titleBarH">50dp</dimen>
     <dimen name="titleSize">18dp</dimen>

@@ -78,6 +78,15 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     private PhotoSelectBuilder builder = PhotoSelectBuilder.getInstance();
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.photo_select_layout);
+
+        init();
+    }
+
+    @Override
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.back) {
@@ -113,15 +122,6 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         if (hasFocus) {
 
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.photo_select_layout);
-
-        init();
     }
 
     private void init() {
@@ -164,6 +164,12 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         pathList = GetPhotoPath.queryGallery(this);
         //获取照片的分类信息
         sortMap = PathUtil.getPathSort(pathList);
+
+        //如果设置为拍照则加入
+        if (builder.getShowCamera()) {
+            pathList.add(0, "拍照");
+        }
+
     }
 
     private void setPhotoGridView() {
@@ -212,6 +218,10 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
             photoSortBean.setIconPath(pathList.get(0));
         }
         photoSortBean.setSum(pathList.size());
+        if (builder.getShowCamera()) {
+            //如果显示拍照则需要减去一张
+            photoSortBean.setSum(pathList.size() - 1);
+        }
         data.add(photoSortBean);
 
         for (String key : sortMap.keySet()) {
@@ -291,7 +301,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         List<String> path = photoAdapter.getSelectedList();
 
         if (builder.getCropable()) {
-            //如果可裁剪
+            //裁剪
             Uri uri = PhotoUtils.getUri(PhotoSelectActivity.this, path.get(0));
             File fileCropUri = new File(Environment
                     .getExternalStorageDirectory().getPath() + "/crop_photo.jpg");
@@ -317,7 +327,8 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
             isAllGranted = PermissionUtils.checkPermissionAllGranted(
                     new String[]{
                             Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA
                     }, this
             );
         }
@@ -327,7 +338,8 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
                         this,
                         new String[]{
                                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.CAMERA
                         },
                         PERMISSION_REQUEST_CODE
                 );

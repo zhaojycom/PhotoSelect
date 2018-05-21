@@ -26,6 +26,8 @@ public interface Builder {
 
     Builder setCropHeight(int cropHeight);
 
+    Builder setShowCamera(boolean showCamera);
+
     int getHorizontalSpacing();
 
     int getVerticalSpacing();
@@ -39,6 +41,8 @@ public interface Builder {
     int getCropWidth();
 
     int getCropHeight();
+
+    boolean getShowCamera();
 
     PhotoSelectBuilder.ISelectedPhotoPath getSelectedPhotoPath();
 

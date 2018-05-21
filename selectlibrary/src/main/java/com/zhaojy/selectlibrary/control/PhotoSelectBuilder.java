@@ -58,6 +58,11 @@ public class PhotoSelectBuilder implements Builder {
      */
     private int cropHeight;
 
+    /**
+     * 是否显示拍照
+     */
+    private boolean showCamera;
+
     private PhotoSelectBuilder() {
 
     }
@@ -114,6 +119,12 @@ public class PhotoSelectBuilder implements Builder {
     }
 
     @Override
+    public Builder setShowCamera(boolean showCamera) {
+        this.showCamera = showCamera;
+        return this;
+    }
+
+    @Override
     public int getHorizontalSpacing() {
         return horizontalSpacing;
     }
@@ -149,6 +160,11 @@ public class PhotoSelectBuilder implements Builder {
     }
 
     @Override
+    public boolean getShowCamera() {
+        return showCamera;
+    }
+
+    @Override
     public ISelectedPhotoPath getSelectedPhotoPath() {
         return selectedPhotoPath;
     }
@@ -173,7 +189,10 @@ public class PhotoSelectBuilder implements Builder {
         if (verticalSpacing == 0) {
             setVerticalSpacing(DisplayUtil.dip2px(context, 4));
         }
-
+        if (multiple) {
+            cropable = false;
+            showCamera = false;
+        }
 
     }
 

@@ -1,7 +1,10 @@
 package com.zhaojy.selectlibrary.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.zhaojy.selectlibrary.R;
 import com.zhaojy.selectlibrary.control.PhotoSelectBuilder;
+import com.zhaojy.selectlibrary.util.PhotoUtils;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -107,24 +111,40 @@ public class PhotoAdapter extends BaseAdapter {
     @SuppressLint("ViewHolder")
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
-        // 获得容器
-        convertView = LayoutInflater.from(this.context).inflate(R.layout.photo_item, null);
-        ViewHolder viewHolder = new ViewHolder(convertView);
-
-        WeakReference<ImageView> imageViewReference = new WeakReference<>(viewHolder.photo);
         //加载图片
-        Glide.with(context)
-                .load(new File(pathList.get(position)))
-                .asBitmap()
-                .centerCrop()
-                .placeholder(R.mipmap.placeholder)
-                .into(imageViewReference.get());
+        if (pathList.get(position).equals("拍照")) {
+            convertView = LayoutInflater.from(this.context).inflate(R.layout.camera, null);
+            ImageView camera = convertView.findViewById(R.id.camera);
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) camera.getLayoutParams();
+            lp.height = builder.getPhotoItemHw();
+            camera.setLayoutParams(lp);
 
-        //设置多选和单选
-        if (builder.getMultiple()) {
-            multiple(viewHolder, position);
+            camera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    takePhoto();
+                }
+            });
         } else {
-            single(viewHolder, position);
+            // 获得容器
+            convertView = LayoutInflater.from(this.context).inflate(R.layout.photo_item, null);
+            ViewHolder viewHolder = new ViewHolder(convertView);
+
+            WeakReference<ImageView> imageViewReference = new WeakReference<>(viewHolder.photo);
+
+            Glide.with(context)
+                    .load(new File(pathList.get(position)))
+                    .asBitmap()
+                    .centerCrop()
+                    .placeholder(R.mipmap.placeholder)
+                    .into(imageViewReference.get());
+
+            //设置多选和单选
+            if (builder.getMultiple()) {
+                multiple(viewHolder, position);
+            } else {
+                single(viewHolder, position);
+            }
         }
 
         return convertView;
@@ -246,6 +266,17 @@ public class PhotoAdapter extends BaseAdapter {
                 singleSelected.selected();
             }
         });
+    }
+
+    /**
+     * 拍照
+     */
+    private void takePhoto() {
+        //调用摄像头
+        File takePhotoFile = new File(Environment
+                .getExternalStorageDirectory().getPath() + "/take_photo.jpg");
+        Uri takePhotoUri = Uri.fromFile(takePhotoFile);
+        PhotoUtils.takePicture((Activity) context, takePhotoUri, PhotoUtils.CODE_CAMERA_REQUEST);
     }
 
 }

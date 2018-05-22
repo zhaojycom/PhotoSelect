@@ -1,10 +1,10 @@
 package com.zhaojy.selectlibrary.control;
 
 import android.content.Context;
-import android.content.Intent;
+import android.net.Uri;
 
+import com.zhaojy.selectlibrary.R;
 import com.zhaojy.selectlibrary.util.DisplayUtil;
-import com.zhaojy.selectlibrary.view.PhotoSelectActivity;
 
 import java.util.List;
 
@@ -16,8 +16,7 @@ import java.util.List;
  */
 
 public class PhotoSelectBuilder implements Builder {
-    private static PhotoSelectBuilder photoSelectBuilder = new PhotoSelectBuilder();
-
+    private Context context;
     /**
      * GridView横向间距
      */
@@ -63,12 +62,77 @@ public class PhotoSelectBuilder implements Builder {
      */
     private boolean showCamera;
 
-    private PhotoSelectBuilder() {
+    /**
+     * 照片摆放列数。默认为3
+     */
+    private int columnSum = 3;
 
-    }
+    /**
+     * 照片Uri
+     */
+    private Uri photoUri;
 
-    public static PhotoSelectBuilder getInstance() {
-        return photoSelectBuilder;
+    /**
+     * 裁剪Uri
+     */
+    private Uri cropUri;
+
+    /**
+     * 占位图
+     */
+    private int placeholder;
+
+    /**
+     * 最大选择数量
+     */
+    private int maxSelected;
+
+    /**
+     * 标题栏shape
+     */
+    private int titleBarShape;
+
+    /**
+     * 底部栏shpae
+     */
+    private int footerBarShape;
+
+    /**
+     * 返回图标
+     */
+    private int backIcon;
+
+    /**
+     * 标题栏文字
+     */
+    private String title;
+
+    /**
+     * 选中背景颜色
+     */
+    private int selectedColor;
+
+    /**
+     * 标题颜色
+     */
+    private int titleColor;
+
+    /**
+     * 照片分类文字颜色
+     */
+    private int photoSortColor;
+
+    public PhotoSelectBuilder(Context context) {
+        this.context = context;
+
+        //设置默认参数
+        setHorizontalSpacing(DisplayUtil.dip2px(context, 4));
+        setVerticalSpacing(DisplayUtil.dip2px(context, 4));
+        setBackIcon(R.mipmap.back);
+        setTitle(context.getResources().getString(R.string.selectPhoto));
+        setTitleBarShape(R.drawable.titlebar_shpae);
+        setFooterBarShape(context.getResources().getColor(R.color.white));
+
     }
 
     @Override
@@ -125,6 +189,78 @@ public class PhotoSelectBuilder implements Builder {
     }
 
     @Override
+    public Builder setColumnSum(int columnSum) {
+        this.columnSum = columnSum;
+        return this;
+    }
+
+    @Override
+    public Builder setPhotoUri(Uri photoUri) {
+        this.photoUri = photoUri;
+        return this;
+    }
+
+    @Override
+    public Builder setCropUri(Uri cropUri) {
+        this.cropUri = cropUri;
+        return this;
+    }
+
+    @Override
+    public Builder setPlaceholder(int placeholder) {
+        this.placeholder = placeholder;
+        return this;
+    }
+
+    @Override
+    public Builder setMaxSelected(int maxSelected) {
+        this.maxSelected = maxSelected;
+        return this;
+    }
+
+    @Override
+    public Builder setTitleBarShape(int titleBarShape) {
+        this.titleBarShape = titleBarShape;
+        return this;
+    }
+
+    @Override
+    public Builder setFooterBarShape(int footerBarShape) {
+        this.footerBarShape = footerBarShape;
+        return this;
+    }
+
+    @Override
+    public Builder setBackIcon(int backIcon) {
+        this.backIcon = backIcon;
+        return this;
+    }
+
+    @Override
+    public Builder setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    @Override
+    public Builder setSelectedColor(int selectedColor) {
+        this.selectedColor = selectedColor;
+        return this;
+    }
+
+    @Override
+    public Builder setTitleColor(int titleColor) {
+        this.titleColor = titleColor;
+        return this;
+    }
+
+    @Override
+    public Builder setPhotoSortColor(int photoSortColor) {
+        this.photoSortColor = photoSortColor;
+        return this;
+    }
+
+    @Override
     public int getHorizontalSpacing() {
         return horizontalSpacing;
     }
@@ -165,16 +301,79 @@ public class PhotoSelectBuilder implements Builder {
     }
 
     @Override
+    public int getColumnSum() {
+        return columnSum;
+    }
+
+    @Override
+    public Uri getPhotoUri() {
+        return photoUri;
+    }
+
+    @Override
+    public Uri getCropUri() {
+        return cropUri;
+    }
+
+    @Override
+    public int getPlaceholder() {
+        return placeholder;
+    }
+
+    @Override
+    public int getMaxSelected() {
+        return maxSelected;
+    }
+
+    @Override
+    public int getTitleBarShape() {
+        return titleBarShape;
+    }
+
+    @Override
+    public int getFooterBarShape() {
+        return footerBarShape;
+    }
+
+    @Override
+    public int getBackIcon() {
+        return backIcon;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public int getSelectedColor() {
+        return selectedColor;
+    }
+
+    @Override
+    public int getTitleColor() {
+        return titleColor;
+    }
+
+    @Override
+    public int getPhotoSortColor() {
+        return photoSortColor;
+    }
+
+    @Override
     public ISelectedPhotoPath getSelectedPhotoPath() {
         return selectedPhotoPath;
     }
 
     @Override
-    public void create(Context context) {
-        //设置默认值
-        setDefault(context);
-        Intent intent = new Intent(context, PhotoSelectActivity.class);
-        context.startActivity(intent);
+    public void create() {
+        if (multiple) {
+            cropable = false;
+            showCamera = false;
+        }
+
+        Director director = new Director(context, this);
+        director.create();
     }
 
     /**
@@ -189,10 +388,7 @@ public class PhotoSelectBuilder implements Builder {
         if (verticalSpacing == 0) {
             setVerticalSpacing(DisplayUtil.dip2px(context, 4));
         }
-        if (multiple) {
-            cropable = false;
-            showCamera = false;
-        }
+
 
     }
 

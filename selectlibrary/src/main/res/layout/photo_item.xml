@@ -9,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/placeholder" />
+        android:scaleType="centerCrop" />
 
     <!--遮盖层-->
     <LinearLayout

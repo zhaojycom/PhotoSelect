@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.zhaojy.selectlibrary.R;
 import com.zhaojy.selectlibrary.bean.PhotoSortBean;
+import com.zhaojy.selectlibrary.control.Director;
+import com.zhaojy.selectlibrary.control.PhotoSelectBuilder;
 import com.zhaojy.selectlibrary.view.CustomPopupWindow;
 
 import java.io.File;
@@ -52,6 +54,11 @@ public class PhotoSortPopUtil {
     public boolean[] selectedArr;
 
     private OnItemClickListener clickListener;
+
+    /**
+     * 照片选择器构建对象
+     */
+    private PhotoSelectBuilder builder = (PhotoSelectBuilder) Director.getBuilder();
 
     public void setClickListener(OnItemClickListener clickListener) {
         this.clickListener = clickListener;
@@ -157,7 +164,7 @@ public class PhotoSortPopUtil {
                     .load(new File(psb.getIconPath()))
                     .asBitmap()
                     .centerCrop()
-                    .placeholder(R.mipmap.placeholder)
+                    .placeholder(builder.getPlaceholder())
                     .into(holder.icon);
 
             //设置水波纹效果

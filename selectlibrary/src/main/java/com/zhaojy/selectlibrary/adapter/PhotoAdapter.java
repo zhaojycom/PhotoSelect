@@ -3,8 +3,6 @@ package com.zhaojy.selectlibrary.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +14,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.zhaojy.selectlibrary.R;
+import com.zhaojy.selectlibrary.control.Director;
 import com.zhaojy.selectlibrary.control.PhotoSelectBuilder;
 import com.zhaojy.selectlibrary.util.PhotoUtils;
 
@@ -48,10 +47,6 @@ public class PhotoAdapter extends BaseAdapter {
      * 选中的数量
      */
     private int selectedSum;
-    /**
-     * 最大选中数量
-     */
-    private int maxSelected;
 
     /**
      * 选择接口
@@ -66,7 +61,7 @@ public class PhotoAdapter extends BaseAdapter {
     /**
      * 照片选择器构建对象
      */
-    private PhotoSelectBuilder builder = PhotoSelectBuilder.getInstance();
+    private PhotoSelectBuilder builder = (PhotoSelectBuilder) Director.getBuilder();
 
     public void setSelected(ISelected selected) {
         this.selected = selected;
@@ -76,10 +71,9 @@ public class PhotoAdapter extends BaseAdapter {
         this.singleSelected = singleSelected;
     }
 
-    public PhotoAdapter(Context context, List<String> pathList, int maxSelected) {
+    public PhotoAdapter(Context context, List<String> pathList) {
         this.context = context;
         this.pathList = pathList;
-        this.maxSelected = maxSelected;
 
         selectedList = new ArrayList<>();
         initMap();
@@ -136,7 +130,7 @@ public class PhotoAdapter extends BaseAdapter {
                     .load(new File(pathList.get(position)))
                     .asBitmap()
                     .centerCrop()
-                    .placeholder(R.mipmap.placeholder)
+                    .placeholder(builder.getPlaceholder())
                     .into(imageViewReference.get());
 
             //设置多选和单选
@@ -221,7 +215,7 @@ public class PhotoAdapter extends BaseAdapter {
                 int visible = finalViewHolder.cover.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE;
 
                 if (visible == View.VISIBLE) {
-                    if (selectedSum == maxSelected) {
+                    if (selectedSum == builder.getMaxSelected()) {
                         Toast.makeText(context, context.getResources().getString(R.string.tip)
                                 , Toast.LENGTH_SHORT).show();
                         return;
@@ -273,10 +267,8 @@ public class PhotoAdapter extends BaseAdapter {
      */
     private void takePhoto() {
         //调用摄像头
-        File takePhotoFile = new File(Environment
-                .getExternalStorageDirectory().getPath() + "/take_photo.jpg");
-        Uri takePhotoUri = Uri.fromFile(takePhotoFile);
-        PhotoUtils.takePicture((Activity) context, takePhotoUri, PhotoUtils.CODE_CAMERA_REQUEST);
+        PhotoUtils.takePicture((Activity) context, builder.getPhotoUri(),
+                PhotoUtils.CODE_CAMERA_REQUEST);
     }
 
 }

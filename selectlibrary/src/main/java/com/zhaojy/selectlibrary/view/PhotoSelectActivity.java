@@ -1,23 +1,26 @@
 package com.zhaojy.selectlibrary.view;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhaojy.selectlibrary.R;
 import com.zhaojy.selectlibrary.adapter.PhotoAdapter;
 import com.zhaojy.selectlibrary.bean.PhotoSortBean;
+import com.zhaojy.selectlibrary.control.Director;
 import com.zhaojy.selectlibrary.control.PhotoSelectBuilder;
 import com.zhaojy.selectlibrary.data.GetPhotoPath;
 import com.zhaojy.selectlibrary.util.PathUtil;
@@ -27,7 +30,6 @@ import com.zhaojy.selectlibrary.util.PhotoUtils;
 import com.zhaojy.selectlibrary.util.ScreenUtils;
 import com.zhaojy.selectlibrary.util.StatusBarUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,17 +44,17 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     private final int PERMISSION_REQUEST_CODE = 10000;
 
     private GridView photoGridView;
+    private RelativeLayout titleBar;
+    private ImageView back;
+    private LinearLayout footerBar;
+    private TextView title;
+
     private PhotoAdapter photoAdapter;
 
     /**
      * 照片分类弹框工具
      */
     private PhotoSortPopUtil sortPopUtil;
-
-    /**
-     * 最大选中数量
-     */
-    private final static int MAX_SELECTED = 9;
 
     /**
      * 所有照片路径集合
@@ -75,7 +77,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     /**
      * 照片选择器构建对象
      */
-    private PhotoSelectBuilder builder = PhotoSelectBuilder.getInstance();
+    private PhotoSelectBuilder builder = (PhotoSelectBuilder) Director.getBuilder();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +120,43 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PhotoUtils.CODE_CAMERA_REQUEST:
+                    //拍照
+                    if (builder.getCropable()) {
+                        //裁剪
+                        PhotoUtils.cropImageUri(PhotoSelectActivity.this,
+                                builder.getPhotoUri(), builder.getCropUri(),
+                                builder.getCropWidth(), builder.getCropHeight()
+                                , builder.getCropWidth(), builder.getCropHeight()
+                                , PhotoUtils.CODE_CROP_REQUEST);
+                    } else {
+                        List<String> path = new ArrayList<>();
+                        path.add(PhotoUtils.getPath(this, builder.getPhotoUri()));
+                        builder.getSelectedPhotoPath().selectedResult(path);
+
+                        this.finish();
+                    }
+                    break;
+                case PhotoUtils.CODE_CROP_REQUEST:
+                    //裁剪
+                    List<String> path = new ArrayList<>();
+                    path.add(PhotoUtils.getPath(this, builder.getCropUri()));
+                    builder.getSelectedPhotoPath().selectedResult(path);
+
+                    this.finish();
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    }
+
+    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus) {
 
@@ -126,7 +165,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
 
     private void init() {
         //设置状态栏透明
-        StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.titleBg));
+        StatusBarUtil.setStatusBarColor(this, builder.getTitleBarShape());
         findViewById();
         //申请权限
         applyPermission();
@@ -137,6 +176,11 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         photoSort = findViewById(R.id.photoSort);
         selected = findViewById(R.id.selected);
         sort = findViewById(R.id.sort);
+        titleBar = findViewById(R.id.titleBar);
+        title = findViewById(R.id.title);
+        back = findViewById(R.id.back);
+        footerBar = findViewById(R.id.footerBar);
+
     }
 
     /**
@@ -155,6 +199,8 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         setListener();
         //初始化选中情况
         initSelected();
+        //初始化样式
+        initStyle();
     }
 
     /**
@@ -172,14 +218,20 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
 
     }
 
+    /**
+     * 设置照片GridView属性
+     */
     private void setPhotoGridView() {
         photoGridView.setHorizontalSpacing(builder.getHorizontalSpacing());
         photoGridView.setVerticalSpacing(builder.getVerticalSpacing());
+        photoGridView.setNumColumns(builder.getColumnSum());
+
         //获取屏幕宽度
         int screenWidth = ScreenUtils.getScreenWidth(this);
-        photoGridView.setColumnWidth(screenWidth / 3);
+        photoGridView.setColumnWidth(screenWidth / builder.getColumnSum());
         //设置照片宽高
-        builder.setPhotoItemHw((screenWidth - 2 * builder.getHorizontalSpacing()) / 3);
+        builder.setPhotoItemHw((screenWidth - (builder.getColumnSum() - 1)
+                * builder.getHorizontalSpacing()) / builder.getColumnSum());
     }
 
     /**
@@ -188,11 +240,11 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     private void setPhotoAdapter() {
         adapterPathList = new ArrayList<>();
         adapterPathList.addAll(pathList);
-        photoAdapter = new PhotoAdapter(this, adapterPathList, MAX_SELECTED);
+        photoAdapter = new PhotoAdapter(this, adapterPathList);
         photoAdapter.setSelected(new PhotoAdapter.ISelected() {
             @Override
             public void selected(int selectedSum) {
-                selected.setText("完成(" + selectedSum + "/" + MAX_SELECTED + ")");
+                selected.setText("完成(" + selectedSum + "/" + builder.getMaxSelected() + ")");
             }
         });
         //单选监听接口
@@ -255,6 +307,9 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
                 sortPopUtil.dismiss();
 
                 sort.setText(data.get(position).getTitle());
+
+                //滚动到顶部
+                photoGridView.smoothScrollToPosition(0);
             }
         });
         sortPopUtil.createSpinner(this, data);
@@ -277,6 +332,8 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
                 //将获取到的图片地址集合发给请求方
                 List<String> path = photoAdapter.getSelectedList();
                 builder.getSelectedPhotoPath().selectedResult(path);
+
+                PhotoSelectActivity.this.finish();
             }
         });
     }
@@ -289,9 +346,20 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
             //如果不是多选隐藏
             selected.setVisibility(View.GONE);
         }
-        selected.setText("完成(0/" + MAX_SELECTED + ")");
+        selected.setText("完成(0/" + builder.getMaxSelected() + ")");
     }
 
+    /**
+     * 初始化样式
+     */
+    private void initStyle() {
+        back.setImageResource(builder.getBackIcon());
+        title.setText(builder.getTitle());
+        footerBar.setBackgroundColor(builder.getFooterBarShape());
+        title.setTextColor(builder.getTitleColor());
+        titleBar.setBackgroundColor(builder.getTitleBarShape());
+        sort.setTextColor(builder.getPhotoSortColor());
+    }
 
     /**
      * 单选结果处理
@@ -303,16 +371,16 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         if (builder.getCropable()) {
             //裁剪
             Uri uri = PhotoUtils.getUri(PhotoSelectActivity.this, path.get(0));
-            File fileCropUri = new File(Environment
-                    .getExternalStorageDirectory().getPath() + "/crop_photo.jpg");
-            Uri cropImageUri = Uri.fromFile(fileCropUri);
-            PhotoUtils.cropImageUri(PhotoSelectActivity.this, uri, cropImageUri,
+
+            PhotoUtils.cropImageUri(PhotoSelectActivity.this, uri, builder.getCropUri(),
                     builder.getCropWidth(), builder.getCropHeight()
                     , builder.getCropWidth(), builder.getCropHeight()
                     , PhotoUtils.CODE_CROP_REQUEST);
 
         } else {
+            //不需要裁剪直接返回
             builder.getSelectedPhotoPath().selectedResult(path);
+            this.finish();
         }
 
     }
@@ -349,5 +417,6 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
             control();
         }
     }
+
 
 }

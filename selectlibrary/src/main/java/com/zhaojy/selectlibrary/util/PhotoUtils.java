@@ -255,7 +255,7 @@ public class PhotoUtils {
                 index = cur.getInt(index);
             }
             if (index == 0) {
-                //do nothing
+
             } else {
                 Uri uriTemp = Uri.parse("content://media/external/images/media/" + index);
                 Log.d(TAG, "uri_temp is " + uriTemp);

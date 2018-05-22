@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/titleBg">
+    android:background="@color/bg">
 
     <!--标题栏-->
     <RelativeLayout
@@ -58,20 +58,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/titleBar"
-        android:background="@color/bg"
         android:gravity="center"
-        android:numColumns="3"
         android:paddingBottom="@dimen/titleBarH"
         android:stretchMode="columnWidth">
-
+        s
     </GridView>
 
     <!--底部目录选择栏-->
     <LinearLayout
+        android:id="@+id/footerBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/titleBarH"
         android:layout_alignParentBottom="true"
-        android:background="@color/titleBg"
+        android:background="@color/white"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -89,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/titleMlr"
                 android:layout_marginRight="@dimen/titleMlr"
-                android:text="所有照片"
+                android:text="@string/allPhoto"
                 android:textColor="@color/black"
                 android:textSize="@dimen/titleSize" />
 

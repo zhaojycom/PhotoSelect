@@ -1,6 +1,7 @@
 package com.zhaojy.selectlibrary.control;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import com.zhaojy.selectlibrary.R;
@@ -90,12 +91,22 @@ public class PhotoSelectBuilder implements Builder {
     /**
      * 标题栏shape
      */
-    private int titleBarShape;
+    private Drawable titleBarShape;
+
+    /**
+     * 标题栏颜色
+     */
+    private int titleBarColor;
 
     /**
      * 底部栏shpae
      */
-    private int footerBarShape;
+    private Drawable footerBarShape;
+
+    /**
+     * 底部栏颜色
+     */
+    private int footerBarColor;
 
     /**
      * 返回图标
@@ -122,16 +133,19 @@ public class PhotoSelectBuilder implements Builder {
      */
     private int photoSortColor;
 
+    /**
+     * 照片分类图标
+     */
+    private int sortIcon;
+
     public PhotoSelectBuilder(Context context) {
         this.context = context;
 
         //设置默认参数
-        setHorizontalSpacing(DisplayUtil.dip2px(context, 4));
-        setVerticalSpacing(DisplayUtil.dip2px(context, 4));
+        setHorizontalSpacing(DisplayUtil.dip2px(context, 3));
+        setVerticalSpacing(DisplayUtil.dip2px(context, 3));
         setBackIcon(R.mipmap.back);
         setTitle(context.getResources().getString(R.string.selectPhoto));
-        setTitleBarShape(R.drawable.titlebar_shpae);
-        setFooterBarShape(context.getResources().getColor(R.color.white));
 
     }
 
@@ -219,14 +233,26 @@ public class PhotoSelectBuilder implements Builder {
     }
 
     @Override
-    public Builder setTitleBarShape(int titleBarShape) {
+    public Builder setTitleBarShape(Drawable titleBarShape) {
         this.titleBarShape = titleBarShape;
         return this;
     }
 
     @Override
-    public Builder setFooterBarShape(int footerBarShape) {
+    public Builder setTitleBarColor(int titleBarColor) {
+        this.titleBarColor = titleBarColor;
+        return this;
+    }
+
+    @Override
+    public Builder setFooterBarShape(Drawable footerBarShape) {
         this.footerBarShape = footerBarShape;
+        return this;
+    }
+
+    @Override
+    public Builder setFooterBarColor(int footerBarColor) {
+        this.footerBarColor = footerBarColor;
         return this;
     }
 
@@ -257,6 +283,12 @@ public class PhotoSelectBuilder implements Builder {
     @Override
     public Builder setPhotoSortColor(int photoSortColor) {
         this.photoSortColor = photoSortColor;
+        return this;
+    }
+
+    @Override
+    public Builder setSortIcon(int sortIcon) {
+        this.sortIcon=sortIcon;
         return this;
     }
 
@@ -326,13 +358,23 @@ public class PhotoSelectBuilder implements Builder {
     }
 
     @Override
-    public int getTitleBarShape() {
+    public Drawable getTitleBarShape() {
         return titleBarShape;
     }
 
     @Override
-    public int getFooterBarShape() {
+    public int getTitleBarColor() {
+        return titleBarColor;
+    }
+
+    @Override
+    public Drawable getFooterBarShape() {
         return footerBarShape;
+    }
+
+    @Override
+    public int getFooterBarColor() {
+        return footerBarColor;
     }
 
     @Override
@@ -361,6 +403,11 @@ public class PhotoSelectBuilder implements Builder {
     }
 
     @Override
+    public int getSortIcon() {
+        return sortIcon;
+    }
+
+    @Override
     public ISelectedPhotoPath getSelectedPhotoPath() {
         return selectedPhotoPath;
     }
@@ -374,22 +421,6 @@ public class PhotoSelectBuilder implements Builder {
 
         Director director = new Director(context, this);
         director.create();
-    }
-
-    /**
-     * 设置默认值
-     *
-     * @param context 上下文
-     */
-    private void setDefault(Context context) {
-        if (horizontalSpacing == 0) {
-            setHorizontalSpacing(DisplayUtil.dip2px(context, 4));
-        }
-        if (verticalSpacing == 0) {
-            setVerticalSpacing(DisplayUtil.dip2px(context, 4));
-        }
-
-
     }
 
     /**

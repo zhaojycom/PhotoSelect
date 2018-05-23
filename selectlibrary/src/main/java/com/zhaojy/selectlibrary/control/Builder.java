@@ -1,5 +1,6 @@
 package com.zhaojy.selectlibrary.control;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 /**
@@ -44,9 +45,13 @@ public interface Builder {
 
     Builder setMaxSelected(int maxSelected);
 
-    Builder setTitleBarShape(int titleBarShape);
+    Builder setTitleBarShape(Drawable titleBarShape);
 
-    Builder setFooterBarShape(int footerBarShape);
+    Builder setTitleBarColor(int titleBarColor);
+
+    Builder setFooterBarShape(Drawable footerBarShape);
+
+    Builder setFooterBarColor(int footerBarColor);
 
     Builder setBackIcon(int backIcon);
 
@@ -57,6 +62,8 @@ public interface Builder {
     Builder setTitleColor(int titleColor);
 
     Builder setPhotoSortColor(int photoSortColor);
+
+    Builder setSortIcon(int sortIcon);
 
     int getHorizontalSpacing();
 
@@ -84,9 +91,13 @@ public interface Builder {
 
     int getMaxSelected();
 
-    int getTitleBarShape();
+    Drawable getTitleBarShape();
 
-    int getFooterBarShape();
+    int getTitleBarColor();
+
+    Drawable getFooterBarShape();
+
+    int getFooterBarColor();
 
     int getBackIcon();
 
@@ -97,6 +108,8 @@ public interface Builder {
     int getTitleColor();
 
     int getPhotoSortColor();
+
+    int getSortIcon();
 
     PhotoSelectBuilder.ISelectedPhotoPath getSelectedPhotoPath();
 

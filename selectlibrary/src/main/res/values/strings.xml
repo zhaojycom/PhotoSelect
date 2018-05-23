@@ -7,11 +7,11 @@
     <dimen name="titleBarH">50dp</dimen>
     <dimen name="titleSize">18dp</dimen>
     <dimen name="titleMlr">16dp</dimen>
-    <dimen name="selectRingHw">20dp</dimen>
+    <dimen name="selectRingHw">18dp</dimen>
     <dimen name="selectRingStoke">2dp</dimen>
     <dimen name="selectRingMtr">4dp</dimen>
-    <dimen name="selectRingInnerRadius">18dp</dimen>
-    <dimen name="selectRingRadius">9dp</dimen>
+    <dimen name="selectRingInnerRadius">16dp</dimen>
+    <dimen name="selectRingRadius">8dp</dimen>
     <dimen name="photoSortIconHw">80dp</dimen>
     <dimen name="selectedPlr">8dp</dimen>
     <dimen name="selectedPtb">4dp</dimen>

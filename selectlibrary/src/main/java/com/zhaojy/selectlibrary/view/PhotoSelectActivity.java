@@ -48,6 +48,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     private ImageView back;
     private LinearLayout footerBar;
     private TextView title;
+    private ImageView sortIcon;
 
     private PhotoAdapter photoAdapter;
 
@@ -164,8 +165,8 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void init() {
-        //设置状态栏透明
-        StatusBarUtil.setStatusBarColor(this, builder.getTitleBarShape());
+        //设置状态栏颜色
+        StatusBarUtil.setStatusBarColor(this, builder.getTitleBarColor());
         findViewById();
         //申请权限
         applyPermission();
@@ -180,7 +181,7 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
         title = findViewById(R.id.title);
         back = findViewById(R.id.back);
         footerBar = findViewById(R.id.footerBar);
-
+        sortIcon = findViewById(R.id.sortIcon);
     }
 
     /**
@@ -355,10 +356,32 @@ public class PhotoSelectActivity extends AppCompatActivity implements View.OnCli
     private void initStyle() {
         back.setImageResource(builder.getBackIcon());
         title.setText(builder.getTitle());
-        footerBar.setBackgroundColor(builder.getFooterBarShape());
-        title.setTextColor(builder.getTitleColor());
-        titleBar.setBackgroundColor(builder.getTitleBarShape());
-        sort.setTextColor(builder.getPhotoSortColor());
+        if (builder.getFooterBarColor() != 0) {
+            footerBar.setBackgroundColor(builder.getFooterBarColor());
+        }
+        if (builder.getFooterBarShape() != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                footerBar.setBackground(builder.getFooterBarShape());
+            }
+        }
+        if (builder.getTitleColor() != 0) {
+            title.setTextColor(builder.getTitleColor());
+        }
+        if (builder.getTitleBarColor() != 0) {
+            titleBar.setBackgroundColor(builder.getTitleBarColor());
+        }
+        if (builder.getTitleBarShape() != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                titleBar.setBackground(builder.getTitleBarShape());
+            }
+        }
+        if (builder.getPhotoSortColor() != 0) {
+            sort.setTextColor(builder.getPhotoSortColor());
+        }
+        if (builder.getSortIcon() != 0) {
+            sortIcon.setImageResource(builder.getSortIcon());
+        }
+
     }
 
     /**

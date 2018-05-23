@@ -10,9 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/titleBarH"
         android:background="@drawable/titlebar_shpae"
-        android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="@dimen/titleMlr">
+        android:orientation="horizontal">
 
         <!--返回-->
         <ImageView
@@ -20,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/titleMlr"
             android:layout_marginRight="@dimen/titleMlr"
             android:onClick="onClick"
             android:src="@mipmap/back" />
@@ -42,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/titleMlr"
             android:background="@drawable/selected_tv_shape"
             android:paddingBottom="@dimen/selectedPtb"
             android:paddingLeft="@dimen/selectedPlr"
@@ -61,7 +61,8 @@
         android:gravity="center"
         android:paddingBottom="@dimen/titleBarH"
         android:stretchMode="columnWidth">
-        s
+
+
     </GridView>
 
     <!--底部目录选择栏-->
@@ -78,6 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:clickable="true"
+            android:focusable="true"
             android:gravity="center_vertical"
             android:onClick="onClick"
             android:orientation="horizontal">
@@ -93,9 +95,10 @@
                 android:textSize="@dimen/titleSize" />
 
             <ImageView
+                android:id="@+id/sortIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/list" />
+                android:src="@mipmap/sort" />
 
         </LinearLayout>
 

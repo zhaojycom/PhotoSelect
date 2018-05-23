@@ -64,7 +64,7 @@
     <!-- Background -->
     <item>
         <shape>
-            <solid android:color="@color/titleBg" />
+            <solid android:color="@color/white" />
         </shape>
     </item>
 </layer-list>

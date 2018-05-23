@@ -288,7 +288,7 @@ public class PhotoSelectBuilder implements Builder {
 
     @Override
     public Builder setSortIcon(int sortIcon) {
-        this.sortIcon=sortIcon;
+        this.sortIcon = sortIcon;
         return this;
     }
 
@@ -404,6 +404,7 @@ public class PhotoSelectBuilder implements Builder {
 
     @Override
     public int getSortIcon() {
+
         return sortIcon;
     }
 
